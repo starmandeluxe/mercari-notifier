@@ -1,0 +1,33 @@
+name: Run Mercari Notifier
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking out repo
+        uses: actions/checkout@v3
+      - name: Setting up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Installing package list
+        run: apt list --installed
+      - name: Removing previous chrome instances on runner
+        run: sudo apt purge google-chrome-stable
+
+      - name: Install all necessary packages
+        run: pip install beautifulsoup4 webdriver-manager selenium chromedriver-autoinstaller pyvirtualdisplay
+      - name: Install xvfb
+        run: sudo apt-get install xvfb
+
+      - name: Running the Python script
+        env:
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+          GM: ${{ secrets.GM }}
+          MERCARI_KEYWORD_QUERY_STRING: ${{ secrets.MERCARI_KEYWORD_QUERY_STRING }}
+          SUB_KEYWORD_SEARCH: ${{ secrets.SUB_KEYWORD_SEARCH }}
+        run: python notify_mercari_listing.py
