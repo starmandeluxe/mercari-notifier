@@ -1,23 +1,24 @@
-import unittest
-import time
-import sys
 import locale
 import os
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import StaleElementReferenceException 
 import smtplib
+import sys
+import time
+import unittest
 from email.mime.text import MIMEText
+
 import chromedriver_autoinstaller
+from bs4 import BeautifulSoup
 from pyvirtualdisplay import Display
+from selenium import webdriver
+from selenium.common.exceptions import (NoSuchElementException,
+                                        StaleElementReferenceException,
+                                        TimeoutException)
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 display = Display(visible=0, size=(800, 800))  
 display.start()
@@ -27,7 +28,7 @@ _locale._getdefaultlocale = (lambda *args: ['en_US', 'utf8'])
 
 
 def main():
-	"""Find out if there's a desired listing posted on Mercari, and notifies user if there was."""
+	"""Finds out if there's a desired listing posted on Mercari, and notifies user if there was."""
 	sys.stdout.reconfigure(encoding='utf-8')
 
 	# Get email addresses.
@@ -132,12 +133,12 @@ def _send_email(contents, sender, recipient, password) -> None:
 			password: email password.
 
 		Returns: 
-			None
+			None.
 	"""
 	msg = MIMEText(contents)
 	msg['From'] = sender
 	msg['To'] = recipient
-	msg['Subject'] = "Congrats, someone just listed a Soundcore LEFT earbud for sale!"
+	msg['Subject'] = "Mercari Notifier Found a New Listing For a Product You Are Searching For!"
 
 	with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
 		smtp_server.login(sender, password)
